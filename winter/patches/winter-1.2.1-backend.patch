@@ -1,0 +1,18 @@
+--- a/winter/modules/backend/models/brandsetting/custom.less   2022-12-23 01:08:49.321781052 -0300
++++ b/winter/modules/backend/models/brandsetting/custom.less   2022-10-13 06:35:23.000000000 -0300
+@@ -6,14 +6,6 @@
+ // @brand-secondary
+ // @brand-accent
+ //
+-:root {
+-    --primary: @brand-primary;
+-    --secondary: @brand-secondary;
+-    --accent: @brand-accent;
+-    --primary-dark: mix(black, saturate(@brand-primary, 5%), 15%);
+-    --secondary-dark: mix(black, saturate(@brand-secondary, 20%), 25%);
+-    --accent-dark: mix(black, desaturate(@brand-accent, 35%), 20%);
+-}
+ 
+ .br-p     { color: @brand-primary; }
+ .br-s     { color: @brand-secondary; }
+
