@@ -1,0 +1,16 @@
+name: wintercms
+services:
+  wintercms:
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile     
+      platforms:
+        - "linux/amd64"
+        - "linux/arm64"
+      tags:
+        - infra7/wintercms:latest
+        - infra7/wintercms:${WINTER_SERIE}
+        - infra7/wintercms:${WINTER_VERSION}
+        - infra7/wintercms:${WINTER_VERSION}-${TARGET_OS}
+    image: infra7/wintercms:${WINTER_VERSION}-${TARGET_OS}
+    network_mode: host

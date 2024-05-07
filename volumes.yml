@@ -1,6 +1,0 @@
-services:
-  winter:
-    volumes:
-      - ./data/storage/:${WINTER_PREFIX:-/opt/infra7}/${WINTER_PROJECT}/storage/
-      #- ./data/themes/:${WINTER_PREFIX}/${WINTER_PROJECT}/themes/
-      #- ./data/plugins/:${WINTER_PREFIX}/${WINTER_PROJECT}/plugins/

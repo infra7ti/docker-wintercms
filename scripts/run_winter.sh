@@ -2,8 +2,8 @@
 
 php \
   ${WINTER_HOME}/artisan serve \
-    --host 0.0.0.0 \
-    --port 8008 \
+    --host ${HOSTNAME} \
+    --port ${WINTER_PORT} \
   || exit 1
 
 exit 0
