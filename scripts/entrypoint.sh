@@ -11,6 +11,7 @@ export WINTER_HOME=/srv/www/winter
 
 : ${WINTER_UID:=1000}
 : ${WINTER_GID:=1000}
+: ${WINTER_ADMIN_USER:=admin}
 : ${WINTER_ADMIN_PASSWD:=admin}
 : ${WINTER_ADMIN_PASSWD_FILE:=null}
 : ${WINTER_AUTOUPDATE:=false}
@@ -18,6 +19,7 @@ export WINTER_HOME=/srv/www/winter
 : ${WINTER_PROJECT:=winter}
 : ${WINTER_AUTOINSTALL_PLUGINS:='Winter.Pages Winter.Translate'}
 : ${WINTER_AUTOINSTALL_THEME:='Castus.Ui3kit ui3kit'}
+: ${WINTER_PRODUCTION:=false}
 
 if test -f "${WINTER_ADMIN_PASSWD_FILE}"; then
   WINTER_ADMIN_PASSWD=$(< ${WINTER_ADMIN_PASSWD_FILE})
@@ -67,6 +69,11 @@ else # Upgrade
     && php ${PWD}/artisan -n winter:update
 fi
 
+# Clear cache and sessions
+php ${PWD}/artisan -n cache:clear
+test "${WINTER_CLEAR_SESSIONS}" == "true" \
+  && find ${PWD}/storage/framework/sessions -type f -delete
+
 # set permissions
 find . -not -user winter -or -not -group winter | while read p; do 
   echo "Fixing ownership on: ${p}"
@@ -75,20 +82,19 @@ done
 find ${PWD} -type d -exec chmod -R 0770 {} \+
 find ${PWD} -type f -exec chmod -R 0660 {} \+
 
-# Brings winter up
-php ${PWD}/artisan -n winter:up
-
-# Clear cache and sessions
-php ${PWD}/artisan -n cache:clear
-test "${WINTER_CLEAR_SESSIONS}" == "true" \
-  && find ${PWD}/storage/framework/sessions -type f -delete
-
 # Reset admin password
-php ${PWD}/artisan -n winter:passwd admin ${WINTER_ADMIN_PASSWD}
+php ${PWD}/artisan -n winter:passwd ${WINTER_ADMIN_USER} ${WINTER_ADMIN_PASSWD}
 # Set theme
 php ${PWD}/artisan -n theme:use ${WINTER_THEME:-ui3kit}
 # Backup configuration
 cp -f ${PWD}/.env ${PWD}/storage/winter.env
+
+# Set debug off for production
+test "${WINTER_PRODUCTION}" == "true" \
+  && sed -i 's/APP_DEBUG=.*/APP_DEBUG=false/g' ${PWD}/.env
+
+# Brings winter up
+php ${PWD}/artisan -n winter:up
 
 echo "WinterCMS configured successfully."
 
